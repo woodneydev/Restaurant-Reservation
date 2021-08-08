@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import NewReservation from "./Components/NewReservation";
 import Layout from "./layout/Layout";
 
 /**
@@ -10,11 +9,8 @@ import Layout from "./layout/Layout";
 function App() {
   return (
     <Switch>
-      {/* <Route path="/">
+      <Route path="/">
         <Layout />
-      </Route> */}
-      <Route path="/reservations/new">
-        <NewReservation />
       </Route>
     </Switch>
   );
