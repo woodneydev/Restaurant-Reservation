@@ -2,7 +2,7 @@ import {useState} from "react"
 import {useHistory} from "react-router-dom"
 import ErrorAlert from "../../layout/ErrorAlert"
 
-function ReservationForm() {
+function ReservationForm({formError, setFormError}) {
 
     const initialFormState = {
         first_name: "",
@@ -12,9 +12,9 @@ function ReservationForm() {
         reservation_time: "",
         people: "",
     }
-
+    
     const [formData, setFormData] = useState({...initialFormState})
-    const [formError, setFormError] = useState(null)
+    const [closed, setClosed] = useState(null)
 
     const history = useHistory()
 
@@ -22,35 +22,52 @@ function ReservationForm() {
         setFormData({...formData, [target.name]: target.value})
     }
 
+    //Helper Function
+
+    async function submitForm() {           
+        const url = `${process.env.REACT_APP_API_BASE_URL}/reservations`
+        const options = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({data: formData}),
+          }
+        const response = await fetch(url, options)
+        const success = await response.json()
+        const {error} = success
+        if (error) {
+            setFormError({message: success.error})
+        }
+        if (!error) history.push(`/dashboard?date=${formData.reservation_date}`)
+
+        return success
+    }
+
+    const validateDateTime = () => {
+        const resDate = new Date(formData.reservation_date)
+        const today = new Date()
+        return (resDate.setHours(0,0,0,0)) < (today.setHours(0,0,0,0))
+        
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault()
-        async function submitForm() {           
-            const url = `${process.env.REACT_APP_API_BASE_URL}/reservations`
-            const options = {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({data: formData}),
-              }
-            const response = await fetch(url, options)
-            const success = await response.json()
-            const {error} = success
-            if (error) {
-                setFormError({message: success.error})
-            }
-            return success
-        }
 
-        submitForm()
-        if (!formError) history.push(`/dashboard?date=${formData.reservation_date}`)
+        let isPast = validateDateTime()
+        if (isPast) {
+            setFormError({message: `Must choose future date/time`})
+        } else {
+            submitForm()   
+        }
+        
     }
 
     const handleCancel = () => {
         setFormData({...initialFormState})
         history.goBack()
     }
-    
+    console.log(formData)
     return (
-            <form className="card-body" >
+            <form className="card-body" onSubmit={handleSubmit} >
                 <h1>New Reservation</h1>
                 <div className="mb-3">
                     <label htmlFor="first_name" className="form-label">First Name:</label>
@@ -76,7 +93,7 @@ function ReservationForm() {
                     <label htmlFor="people" className="form-label">Party Size:</label>
                     <input id="people" name="people" type="number" min="1" className="form-control" onChange={handleChange} value={formData.people} required />
                 </div>
-                <button type="submit" className="btn btn-primary" onClick={handleSubmit} >Submit</button>
+                <button type="submit" className="btn btn-primary"> Submit</button>
                 <button type="button" className="btn btn-danger ml-3" onClick={handleCancel}>Cancel</button>
                 <ErrorAlert error={formError} />
             </form>

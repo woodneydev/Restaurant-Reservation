@@ -39,6 +39,29 @@ const hasValidProperties = (req, res, next) => {
 
 const hasRequiredProperties = hasProperties( "first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people")
 
+const isClosed = (req, res, next) => {
+  const { data = {} } = req.body
+  let result = new Date(data.reservation_date)
+  let day = result.getDay()
+  if (day == 1) {
+    next({status: 400, message: `Restaurant is closed on Tuesdays`})
+  } else {
+    next()
+  }
+}
+
+const isDatePast = (req, res, next) => {
+  const { data = {} } = req.body
+  const reqDate = new Date(data.reservation_date)
+  const today = new Date()
+  const isPast = (reqDate.setHours(0,0,0,0)) < (today.setHours(0,0,0,0))
+  if (isPast) {
+    next({status: 400, message: `Must choose a future date/time`})
+  } else {
+    next()
+  }
+}
+
 // Route Handlers
 
 const list = async (req, res) => {
@@ -54,5 +77,5 @@ const create = async (req, res) => {
 
 module.exports = {
   list: [hasQuery, asyncErrorBoundary(list)],
-  create: [hasValidProperties, hasRequiredProperties, asyncErrorBoundary(create)]
+  create: [hasValidProperties, hasRequiredProperties, isClosed, isDatePast, asyncErrorBoundary(create)]
 };
