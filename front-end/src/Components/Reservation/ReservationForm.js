@@ -16,7 +16,6 @@ function ReservationForm() {
     const [formData, setFormData] = useState({...initialFormState})
     const [formError, setFormError] = useState(null)
 
-    console.log(formData)
     const history = useHistory()
 
     const handleChange = ({target}) => {
@@ -25,7 +24,7 @@ function ReservationForm() {
 
     const handleSubmit = (event) => {
         event.preventDefault()
-        async function submitForm() {
+        async function submitForm() {           
             const url = `${process.env.REACT_APP_API_BASE_URL}/reservations`
             const options = {
                 method: "POST",
@@ -33,11 +32,16 @@ function ReservationForm() {
                 body: JSON.stringify({data: formData}),
               }
             const response = await fetch(url, options)
-            
-            return response.json()
+            const success = await response.json()
+            const {error} = success
+            if (error) {
+                setFormError({message: success.error})
+            }
+            return success
         }
+
         submitForm()
-        history.push("/dashboard")
+        if (!formError) history.push(`/dashboard?date=${formData.reservation_date}`)
     }
 
     const handleCancel = () => {
@@ -45,7 +49,6 @@ function ReservationForm() {
         history.goBack()
     }
     
-    console.log(process.env.REACT_APP_API_BASE_URL)
     return (
             <form className="card-body" >
                 <h1>New Reservation</h1>

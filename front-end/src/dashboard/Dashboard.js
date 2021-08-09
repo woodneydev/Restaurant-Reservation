@@ -4,6 +4,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import UserCard from "./UserCard"
 import {today, previous, next} from "../utils/date-time"
 import Loading from "./Loading"
+import {useLocation} from "react-router-dom"
 
 /**
  * Defines the dashboard page.
@@ -12,10 +13,15 @@ import Loading from "./Loading"
  * @returns {JSX.Element}
  */
 function Dashboard() {
+  const {search} = useLocation()
+  const searchParams = new URLSearchParams(search)
+  const todayDate = searchParams.get("date")
+
+  const initialDay = todayDate || today()
   const currentDay = today()
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const [date, setDate] = useState(currentDay)
+  const [date, setDate] = useState(initialDay)
   
   useEffect(loadDashboard, [date]);
   
@@ -27,7 +33,7 @@ function Dashboard() {
       .catch(setReservationsError);
     return () => abortController.abort();
   }
-  
+
   const handleClickPrevious = () => {
     const previousDay = previous(date)
     setDate(previousDay)
@@ -41,8 +47,6 @@ function Dashboard() {
     const nextDay = next(date)
     setDate(nextDay)
   }
-
-  console.log(date)
 
   let list
   if (reservations.length > 0) {

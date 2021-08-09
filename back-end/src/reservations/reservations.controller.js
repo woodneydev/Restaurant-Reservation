@@ -1,5 +1,6 @@
 const service = require("./reservations.service")
 const hasProperties = require("../errors/hasProperties")
+const asyncErrorBoundary = require("../errors/asyncErrorBoundary")
 /**
  * List handler for reservation resources
  */
@@ -52,6 +53,6 @@ const create = async (req, res) => {
 }
 
 module.exports = {
-  list: [hasQuery, list],
-  create: [hasValidProperties, hasRequiredProperties, create]
+  list: [hasQuery, asyncErrorBoundary(list)],
+  create: [hasValidProperties, hasRequiredProperties, asyncErrorBoundary(create)]
 };

@@ -3,8 +3,6 @@ import {Redirect, Switch, Route, useRouteMatch} from "react-router-dom"
 
 function Reservation () {
     const {url} = useRouteMatch()
-    // 
-    console.log(url)
     return (
         <Switch>
             <Route exact path={url} >
