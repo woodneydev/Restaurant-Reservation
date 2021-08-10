@@ -3,7 +3,7 @@ import { Redirect, Switch, Route, useRouteMatch} from "react-router-dom"
 import NewTable from "./NewTable"
 
 function Table () {
-    const [formError, setFormError] = useState()
+    const [formError, setFormError] = useState(null)
     const {url} = useRouteMatch()
 
     return (

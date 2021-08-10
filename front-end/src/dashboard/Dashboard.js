@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import UserCard from "./UserCard"
-import {today, previous, next} from "../utils/date-time"
+import { today } from "../utils/date-time"
 import Loading from "./Loading"
 import {useLocation} from "react-router-dom"
+import ReservationNav from "./ReservationNav";
+import AllTables from "./AllTables";
 
 /**
  * Defines the dashboard page.
@@ -34,21 +36,7 @@ function Dashboard() {
     return () => abortController.abort();
   }
 
-  const handleClickPrevious = () => {
-    const previousDay = previous(date)
-    setDate(previousDay)
-  }
-
-  const handleClickToday = () => {
-    setDate(currentDay)
-  }
-
-  const handleClickNext = () => {
-    const nextDay = next(date)
-    setDate(nextDay)
-  }
-
-  let list
+  let list;
   if (reservations.length > 0) {
     list = reservations.map(user => {
       return  <UserCard user={user} key={user.reservation_id} /> 
@@ -58,18 +46,16 @@ function Dashboard() {
   return (
     <main>
       <h1>Dashboard</h1>
+      <h4>Available Tables</h4>
+      <AllTables />
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date {date}</h4>
-
       </div>
-      <div>
-          <button type="button" className="btn btn-secondary mr-3" onClick={handleClickPrevious}>Previous</button>
-          <button type="button" className="btn btn-dark mr-3" onClick={handleClickToday} >Today</button>
-          <button type="button" className="btn btn-secondary" onClick={handleClickNext} >Next</button>
-        </div>
+      <ReservationNav currentDay={currentDay} date={date} setDate={setDate} />
       <Loading reservations={reservations} />
       <ErrorAlert error={reservationsError} />
       {list}
+      
     </main>
   );
 }

@@ -44,7 +44,7 @@ const isDayClosed = (req, res, next) => {
   let result = new Date(data.reservation_date)
   let day = result.getDay()
   //need to be set to one for tuesdays
-  if (day == 2) {
+  if (day == 1) {
     next({ status: 400, message: `Restaurant is closed on Tuesdays` })
   } else {
     next()
@@ -101,7 +101,7 @@ const isTimeCorrect = (req, res, next) => {
 const isPeopleNum = (req, res, next) => {
   const { data = {} } = req.body
   let result = typeof data.people
-  if (result === "string") {
+  if (result !== "number") {
     next({ status: 400, message: `Number of people must be an number` })
   } else {
     next()

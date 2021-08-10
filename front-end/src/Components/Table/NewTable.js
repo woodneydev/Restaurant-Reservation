@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
+import ErrorAlert from "../../layout/ErrorAlert"
 
-function NewTable({FormError, setFormError}) {
+function NewTable({formError, setFormError}) {
     const initialFormState = {
         table_name: "",
         capacity: ""
@@ -35,14 +36,14 @@ function NewTable({FormError, setFormError}) {
         if (error) {
             setFormError({message: success.error})
         }
-        if (!error) history.push(`/dashboard?date=${formData.reservation_date}`)
+        if (!error) history.push(`/dashboard`)
 
         return success
     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
-
+        submitForm()
     }
 
     return (
@@ -59,6 +60,7 @@ function NewTable({FormError, setFormError}) {
                 </div>
                 <button type="submit" className="btn btn-primary"> Submit</button>
                 <button type="button" className="btn btn-danger ml-3" onClick={handleCancel} >Cancel</button>
+                <ErrorAlert error={formError} />
             </form>
         </>
     )
