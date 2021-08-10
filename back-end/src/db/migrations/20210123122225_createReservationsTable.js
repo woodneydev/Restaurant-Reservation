@@ -11,6 +11,10 @@ exports.up = function (knex) {
   });
 };
 
+// exports.down = function (knex) {
+//   return knex.schema.dropTable("reservations");
+// }
+
 exports.down = function (knex) {
-  return knex.schema.dropTable("reservations");
-}
+  return knex.schema.dropTableIfExists("reservations")
+};

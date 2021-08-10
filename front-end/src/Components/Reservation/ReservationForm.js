@@ -29,7 +29,14 @@ function ReservationForm({formError, setFormError}) {
         const options = {
             method: "POST",
             headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({data: formData}),
+            body: JSON.stringify({ "data": {
+                "first_name": formData.first_name,
+                "last_name": formData.last_name,
+                "mobile_number": formData.mobile_number,
+                "reservation_date": formData.reservation_date,
+                "reservation_time": formData.reservation_time,
+                "people": Number(formData.people)
+            }}),
           }
         const response = await fetch(url, options)
         const success = await response.json()
@@ -45,18 +52,18 @@ function ReservationForm({formError, setFormError}) {
     const validateDateTime = () => {
         const resDate = new Date(formData.reservation_date)
         const today = new Date()
-        return (resDate.setHours(0,0,0,0)) < (today.setHours(0,0,0,0))
+        return (today.setHours(12,0,0,0)) <= (resDate.setHours(0,0,0,0)) 
         
     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        let isPast = validateDateTime()
-        if (isPast) {
-            setFormError({message: `Must choose future date/time`})
+        let isFuture = validateDateTime()
+        if (isFuture) {
+            submitForm()
         } else {
-            submitForm()   
+            setFormError({message: `Must choose future date/time`})
         }
         
     }
@@ -65,7 +72,7 @@ function ReservationForm({formError, setFormError}) {
         setFormData({...initialFormState})
         history.goBack()
     }
-    console.log(formData)
+    console.log(typeof formData.people)
     return (
             <form className="card-body" onSubmit={handleSubmit} >
                 <h1>New Reservation</h1>
