@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useHistory } from "react-router-dom"
 
-function NewTable() {
+function NewTable({FormError, setFormError}) {
     const initialFormState = {
         table_name: "",
         capacity: ""
@@ -19,9 +19,30 @@ function NewTable() {
         history.goBack()
     }
 
+    async function submitForm() {           
+        const url = `${process.env.REACT_APP_API_BASE_URL}/tables`
+        const options = {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ "data": {
+                "table_name": formData.table_name,
+                "capacity": Number(formData.capacity)
+            }}),
+          }
+        const response = await fetch(url, options)
+        const success = await response.json()
+        const {error} = success
+        if (error) {
+            setFormError({message: success.error})
+        }
+        if (!error) history.push(`/dashboard?date=${formData.reservation_date}`)
+
+        return success
+    }
+
     const handleSubmit = (event) => {
         event.preventDefault()
-        
+
     }
 
     return (

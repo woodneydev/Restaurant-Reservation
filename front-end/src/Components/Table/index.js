@@ -1,8 +1,9 @@
+import { useState } from "react"
 import { Redirect, Switch, Route, useRouteMatch} from "react-router-dom"
 import NewTable from "./NewTable"
 
 function Table () {
-
+    const [formError, setFormError] = useState()
     const {url} = useRouteMatch()
 
     return (
@@ -11,7 +12,7 @@ function Table () {
                 <Redirect to={"/dashboard"} />
             </Route>
             <Route path={`${url}/new`} >
-                <NewTable />
+                <NewTable formError={formError} setFormError={setFormError} />
             </Route>
         </Switch>
     )

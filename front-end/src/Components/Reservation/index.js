@@ -14,6 +14,9 @@ function Reservation () {
             <Route path={`${url}/new`} >
                 <ReservationForm formError={formError} setFormError={setFormError} />
             </Route>
+            <Route path={`${url}/:reservation_id/seat`} >
+
+            </Route>
         </Switch>
         
     )
