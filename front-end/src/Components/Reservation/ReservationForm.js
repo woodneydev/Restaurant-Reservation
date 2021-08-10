@@ -2,6 +2,7 @@ import {useState} from "react"
 import {useHistory} from "react-router-dom"
 import ErrorAlert from "../../layout/ErrorAlert"
 
+
 function ReservationForm({formError, setFormError}) {
 
     const initialFormState = {
@@ -14,7 +15,7 @@ function ReservationForm({formError, setFormError}) {
     }
     
     const [formData, setFormData] = useState({...initialFormState})
-    const [closed, setClosed] = useState(null)
+    const restaurant = {opening: "10:30", closing: "21:30"}
 
     const history = useHistory()
 
@@ -50,20 +51,23 @@ function ReservationForm({formError, setFormError}) {
     }
 
     const validateDateTime = () => {
-        const resDate = new Date(formData.reservation_date)
-        const today = new Date()
-        return (today.setHours(12,0,0,0)) <= (resDate.setHours(0,0,0,0)) 
-        
+        let today = new Date().getTime()
+        let resDate = `${formData.reservation_date} ${formData.reservation_time}`
+        return today > new Date(resDate).getTime()
     }
-
+    
     const handleSubmit = (event) => {
         event.preventDefault()
 
-        let isFuture = validateDateTime()
-        if (isFuture) {
-            submitForm()
+        let isPast = validateDateTime()
+        if (isPast) {
+            setFormError({message: `Must choose future date/time`})    
+        } else if (formData.reservation_time < restaurant.opening  ) {
+            setFormError({message: `Time too early, open at 10:30am`})
+        } else if (formData.reservation_time > restaurant.closing) {
+            setFormError({message: `Time too late, close at 10:30pm`})
         } else {
-            setFormError({message: `Must choose future date/time`})
+            submitForm()
         }
         
     }
@@ -72,7 +76,7 @@ function ReservationForm({formError, setFormError}) {
         setFormData({...initialFormState})
         history.goBack()
     }
-    console.log(typeof formData.people)
+
     return (
             <form className="card-body" onSubmit={handleSubmit} >
                 <h1>New Reservation</h1>

@@ -39,12 +39,26 @@ const hasValidProperties = (req, res, next) => {
 
 const hasRequiredProperties = hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people")
 
-const isClosed = (req, res, next) => {
+const isDayClosed = (req, res, next) => {
   const { data = {} } = req.body
   let result = new Date(data.reservation_date)
   let day = result.getDay()
-  if (day == 1) {
+  //need to be set to one for tuesdays
+  if (day == 2) {
     next({ status: 400, message: `Restaurant is closed on Tuesdays` })
+  } else {
+    next()
+  }
+}
+
+const isTimeClosed = (req, res, next) => {
+  const { data = {} } = req.body
+  const restaurant = { opening: "10:30", closing: "21:30" }
+
+  if (data.reservation_time < restaurant.opening) {
+    next({status: 400, message: `Time too early, open at 10:30am` })
+  } else if (data.reservation_time > restaurant.closing) {
+    next({status: 400, message: `Time too late, close at 10:30pm` })
   } else {
     next()
   }
@@ -52,9 +66,11 @@ const isClosed = (req, res, next) => {
 
 const isDatePast = (req, res, next) => {
   const { data = {} } = req.body
-  const reqDate = new Date(data.reservation_date)
-  const today = new Date()
-  const isPast = (reqDate.setHours(0, 0, 0, 0)) < (today.setHours(0, 0, 0, 0))
+
+  let today = new Date().getTime()
+  let resDate = `${data.reservation_date} ${data.reservation_time}`
+  let isPast = today > new Date(resDate).getTime()
+
   if (isPast) {
     next({ status: 400, message: `Must choose a future date/time` })
   } else {
@@ -74,7 +90,7 @@ const isDateCorrect = (req, res, next) => {
 
 const isTimeCorrect = (req, res, next) => {
   let time = req.body.data.reservation_time
-  let expression = /\d\d:\d\d/
+  let expression = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
   if (time.match(expression)) {
     return next()
   } else {
@@ -107,5 +123,18 @@ const create = async (req, res) => {
 
 module.exports = {
   list: [hasQuery, asyncErrorBoundary(list)],
-  create: [hasValidProperties, hasRequiredProperties, isClosed, isDatePast, isPeopleNum, isDateCorrect, isTimeCorrect, asyncErrorBoundary(create)]
+  create: [
+    hasValidProperties,
+    hasRequiredProperties,
+    isDayClosed,
+    isDatePast,
+    isPeopleNum,
+    isDateCorrect,
+    isTimeCorrect,
+    isTimeClosed,
+    asyncErrorBoundary(create)
+  ],
+
+
+
 };
