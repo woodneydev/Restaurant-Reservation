@@ -102,7 +102,7 @@ function ReservationForm({formError, setFormError}) {
                 </div>
                 <div className="mb-3">
                     <label htmlFor="people" className="form-label">Party Size:</label>
-                    <input id="people" name="people" type="number" min="1" className="form-control" onChange={handleChange} value={formData.people} required />
+                    <input id="people" name="people" type="number" placeholder="1, 2, 3..." min="1" className="form-control" onChange={handleChange} value={formData.people} required />
                 </div>
                 <button type="submit" className="btn btn-primary"> Submit</button>
                 <button type="button" className="btn btn-danger ml-3" onClick={handleCancel}>Cancel</button>

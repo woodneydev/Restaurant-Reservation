@@ -8,7 +8,7 @@ function UserCard({user}) {
             <div className="card-body">
                 <h5 className="card-title">{user.reservation_date} @ {user.reservation_time}</h5>
                 <p className="card-text">Party Size: {user.people} people</p>
-                <Link to="#" className="btn btn-primary">Go somewhere</Link>
+                <Link to={`/reservations/${user.reservation_id}/seat`} className="btn btn-primary">Seat</Link>
             </div>
         </div>
     )
