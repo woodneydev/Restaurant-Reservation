@@ -21,6 +21,15 @@ function AllTables() {
         
     }, [])
 
+    const handleFinish = () => {
+        const doesConfirm = window.confirm("Is this table ready to seat new guests? This cannot be undone.");
+
+        if (!doesConfirm) return;
+
+
+
+    }
+
     let list;
     if (tables.length) {
         list = tables.map((table, index) => {
@@ -29,9 +38,13 @@ function AllTables() {
                     <div className="ms-2 me-auto">
                         <div className="fw-bold">{table.table_name}</div>
                     </div>
-                    <span className={table.reservation_id ? "badge bg-warning rounded-pill" : "badge bg-primary rounded-pill"} data-table-id-status={table.table_id} >
-                        {table.reservation_id ? `Occupied`: `Free`}
-                    </span>
+                    <div>
+                        {table.reservation_id ? <button class="btn btn-light mr-2" data-table-id-finish={table.table_id} onClick={handleFinish} >Finish</button>: false}
+                        <span className={table.reservation_id ? 
+                            "badge bg-warning rounded-pill" : "badge bg-primary rounded-pill"} data-table-id-status={table.table_id} >
+                            {table.reservation_id ? `Occupied`: `Free`}
+                        </span>
+                    </div>
                 </li>
             )
         })

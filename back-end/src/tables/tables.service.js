@@ -28,6 +28,10 @@ const update = (updatedTable) => {
         .then((updated) => updated[0])
 }
 
+const destroy = (table_id) => {
+    return knex("tables")
+}
+
 module.exports = {
     list,
     create,

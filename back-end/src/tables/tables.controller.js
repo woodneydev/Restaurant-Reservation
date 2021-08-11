@@ -50,7 +50,7 @@ const tableExists = async (req, res, next) => {
         res.locals.table = table
         next()
     } else {
-        next({status: 404, message: `Table cannot be found`})
+        next({status: 404, message: `Table cannot be found, 99`})
     }
 }
 
@@ -96,6 +96,15 @@ const doesReservationExists = async (req, res, next) => {
     }
 }
 
+const tableNotOccupied = (req, res, next) => {
+    const {table} = res.locals
+    if (table.reservation_id) {
+        next()
+    } else {
+        next({status: 400, message: `Table not occupied`})
+    }
+}
+
 // Route Functions
 
 const create = async (req, res) => {
@@ -118,6 +127,15 @@ const update = async (req, res, next) => {
     res.status(200).json({data})
 }
 
+const destroy = async (req, res, next) => {
+    const updatedTable = {
+        ...res.locals.table,
+        reservation_id: null
+    }
+    const data = await service.update(updatedTable)
+    res.status(200).json({data})
+}
+
 module.exports = {
     create: [capacityIsNum, hasValidProperties, hasRequiredProperties, nameHasTwoChars, asyncErrorBoundary(create)],
     update: [
@@ -129,5 +147,6 @@ module.exports = {
         isTableOccupied,
         asyncErrorBoundary(update)
     ],
+    delete: [asyncErrorBoundary(tableExists), tableNotOccupied, asyncErrorBoundary(destroy)],
     list: [asyncErrorBoundary(list)],
 }
