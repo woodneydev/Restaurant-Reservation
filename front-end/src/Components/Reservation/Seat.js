@@ -1,18 +1,19 @@
 import { useState } from "react";
-import { useHistory, useParams } from "react-router";
+import { useHistory, useParams } from "react-router-dom";
+import ErrorAlert from "../../layout/ErrorAlert";
 
 
-function Seat({tables}) {
+function Seat({tables, failure, formError, setFormError}) {
 
     const {reservation_id} = useParams()
     
     const initialFormState = {
         "table_id": "",
-        reservation_id
+        "reservation_id": Number(reservation_id)
     }
 
     const [formData, setFormData] = useState({...initialFormState})
-    const [formError, setFormError] = useState(null)
+    // const [formError, setFormError] = useState(null)
 
     const history = useHistory()
 
@@ -23,8 +24,28 @@ function Seat({tables}) {
         })
     }
 
-    async function submitForm() {           
-        const url = `${process.env.REACT_APP_API_BASE_URL}/tables/${formData.table_id}/seat`
+    // async function submitForm() {    
+    //     const url = `${process.env.REACT_APP_API_BASE_URL}/tables/${formData.table_id}/seat`
+    //     const options = {
+    //         method: "PUT",
+    //         headers: {"Content-Type": "application/json"},
+    //         body: JSON.stringify({ data: {reservation_id: formData.reservation_id } } )
+    //       }
+    //     const response = await fetch(url, options)
+    //     const success = await response.json()
+    //     const {error} = success
+    //     if (error) {
+    //         console.log(error)
+    //         setFormError({message: success.error})
+    //     }
+    //     if (!error) history.push(`/dashboard`)
+
+    //     return success
+    // }
+
+    async function submitForm() {
+        const tableId = Number(formData.table_id)           
+        const url = `${process.env.REACT_APP_API_BASE_URL}/tables/${tableId}/seat`
         const options = {
             method: "PUT",
             headers: {"Content-Type": "application/json"},
@@ -40,10 +61,11 @@ function Seat({tables}) {
         }
         if (!error) history.push(`/dashboard`)
 
-        return success
+        return true
     }
 
-    const handleSubmit = (req, res, next) => {
+    const handleSubmit = (event) => {
+        event.preventDefault()
         submitForm()
     }
 
@@ -55,17 +77,20 @@ function Seat({tables}) {
             )
         })
     }
-   
+    
     return (
         <form className="card mt-5" onSubmit={handleSubmit} >
             <div className="card-body">
                 <h3 className="card-title">Select Table</h3>
+                <ErrorAlert error={failure} />
                 <select name="table_id" className="form-select" aria-label="Default select example" onChange={handleChange} value={formData.table_id} >
+                    <option>---Please Select---</option>
                     {list}
                 </select> <br />
                 <button type="submit" className="btn btn-primary mt-3"> Submit</button>
                 <button type="button" className="btn btn-danger ml-3 mt-3" >Cancel</button>
             </div>
+            <ErrorAlert error={formError} />
         </form>
     )
 }

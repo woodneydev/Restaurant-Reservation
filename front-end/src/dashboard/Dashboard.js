@@ -14,7 +14,7 @@ import AllTables from "./AllTables";
  *  the date for which the user wants to view reservations.
  * @returns {JSX.Element}
  */
-function Dashboard({failure, setFailure, tables, setTables}) {
+function Dashboard() {
   const {search} = useLocation()
   const searchParams = new URLSearchParams(search)
   const todayDate = searchParams.get("date")
@@ -47,7 +47,7 @@ function Dashboard({failure, setFailure, tables, setTables}) {
     <main>
       <h1>Dashboard</h1>
       <h4>Available Tables</h4>
-      <AllTables failure={failure} setFailure={setFailure} tables={tables} setTables={setTables} />
+      <AllTables />
       <div className="d-md-flex mb-3">
         <h4 className="mb-0">Reservations for date {date}</h4>
       </div>

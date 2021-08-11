@@ -1,7 +1,26 @@
+import { useState, useEffect } from "react"
 import ErrorAlert from "../layout/ErrorAlert"
 
-function AllTables({failure, tables}) {
+function AllTables() {
     
+    const [tables, setTables] = useState([])
+    const [failure, setFailure] = useState(null)
+    
+    useEffect( () => {
+        async function loadTables() {
+            try {
+            const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/tables`)
+            const tableList = await response.json()
+            setTables(tableList.data)
+            } catch (e) {
+                setFailure(e)
+            }
+        }
+        
+        loadTables()
+        
+    }, [])
+
     let list;
     if (tables.length) {
         list = tables.map((table, index) => {

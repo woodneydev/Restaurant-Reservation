@@ -5,7 +5,6 @@ import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import Reservation from "../Components/Reservation";
 import Table from "../Components/Table"
-import {useState, useEffect} from "react"
 
 /**
  * Defines all the routes for the application.
@@ -16,35 +15,16 @@ import {useState, useEffect} from "react"
  */
 function Routes() {
 
-  const [tables, setTables] = useState([])
-  const [failure, setFailure] = useState(null)
-  
-  useEffect( () => {
-      async function loadTables() {
-          try {
-          const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/tables`)
-          const tableList = await response.json()
-          setTables(tableList.data)
-          } catch (e) {
-              setFailure(e)
-          }
-      }
-      
-      loadTables()
-      
-  }, [])
-
-
   return (
     <Switch>
       <Route exact={true} path="/">
         <Redirect to={"/dashboard"} />
       </Route>
       <Route path="/reservations">
-        <Reservation tables={tables} />
+        <Reservation />
       </Route>
       <Route path="/dashboard">
-        <Dashboard failure={failure} setFailure={setFailure} tables={tables} setTables={setTables} />
+        <Dashboard />
       </Route>
         <Route path="/tables" >
           <Table />

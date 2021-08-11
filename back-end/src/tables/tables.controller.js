@@ -115,12 +115,11 @@ const update = async (req, res, next) => {
     }
 
     const data = await service.update(updateTable)
-    res.sendStatus(200)
-    // res.status(201).json({data})
+    res.status(200).json({data})
 }
 
 module.exports = {
-    create: [capacityIsNum, hasValidProperties, hasRequiredProperties, nameHasTwoChars,  asyncErrorBoundary(create)],
+    create: [capacityIsNum, hasValidProperties, hasRequiredProperties, nameHasTwoChars, asyncErrorBoundary(create)],
     update: [
         asyncErrorBoundary(tableExists), 
         isThereData, 
@@ -130,5 +129,5 @@ module.exports = {
         isTableOccupied,
         asyncErrorBoundary(update)
     ],
-    list,
+    list: [asyncErrorBoundary(list)],
 }
