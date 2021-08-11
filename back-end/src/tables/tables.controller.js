@@ -2,6 +2,7 @@
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary")
 const hasProperties = require("../errors/hasProperties")
 const service = require("./tables.service")
+const reservationsService = require("../reservations/reservations.service")
 
 
 // Validation MiddleWare
@@ -45,12 +46,55 @@ const capacityIsNum = (req, res, next) => {
 
 const tableExists = async (req, res, next) => {
     const table = await service.read(req.params.table_id)
-    console.log(table)
     if (table) {
         res.locals.table = table
         next()
     } else {
         next({status: 404, message: `Table cannot be found`})
+    }
+}
+
+const isTableOccupied = (req, res, next) => {
+    const {table} = res.locals
+    const x = {...table}
+    console.log("this is x", x)
+    if (table.reservation_id) {
+        next({status: 400, message: `Table already occupied`})
+    }
+}
+
+const isTableBigEnough = async (req, res, next) => {
+    const table = await service.read(req.params.table_id)
+    console.log(`this is table` ,table)
+    const reservation = await reservationsService.read(req.body.data.reservation_id)
+    console.log(`this is reservation`, reservation)
+    let isSufficient = reservation.people <= table.capacity
+    console.log(`is sufficient`, isSufficient)
+    if (isSufficient) {
+        next()
+    } else {
+        next({status: 400, message: `Table does not have sufficient capacity`})
+    }
+}
+
+
+const isThereData = (req, res, next) => {
+    const { data } = req.body
+    if (data) {
+        next()
+    } else {
+        next({status:400, message: `There is no data object`})
+    }
+}
+
+const isThereReservationId = hasProperties("reservation_id")
+
+const doesReservationExists = async (req, res, next) => {
+    const reservation = await reservationsService.read(req.body.data.reservation_id)
+    if (reservation) {
+        next()
+    } else {
+        next({status: 404, message: `Reservation not found, invalid reservation_id, 999`})
     }
 }
 
@@ -73,11 +117,19 @@ const update = async (req, res, next) => {
     }
 
     const data = await service.update(updateTable)
-    res.status(201).json({data})
+    res.sendStatus(200)
+    // res.status(201).json({data})
 }
 
 module.exports = {
-    create: [hasValidProperties, hasRequiredProperties, nameHasTwoChars, capacityIsNum, asyncErrorBoundary(create)],
-    update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
+    create: [capacityIsNum, hasValidProperties, hasRequiredProperties, nameHasTwoChars,  asyncErrorBoundary(create)],
+    update: [
+        asyncErrorBoundary(tableExists), 
+        isThereData, 
+        isThereReservationId, 
+        asyncErrorBoundary(doesReservationExists), 
+        asyncErrorBoundary(isTableBigEnough),
+        asyncErrorBoundary(update)
+    ],
     list,
 }

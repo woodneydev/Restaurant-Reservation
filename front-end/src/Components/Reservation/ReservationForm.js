@@ -79,7 +79,7 @@ function ReservationForm({formError, setFormError}) {
 
     return (
             <form className="card-body" onSubmit={handleSubmit} >
-                <h1>New Reservation</h1>
+                <h2>New Reservation</h2>
                 <div className="mb-3">
                     <label htmlFor="first_name" className="form-label">First Name:</label>
                     <input id="first_name" name="first_name" type="text" className="form-control" onChange={handleChange} value={formData.first_name} required />
