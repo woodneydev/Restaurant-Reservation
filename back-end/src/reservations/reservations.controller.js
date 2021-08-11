@@ -111,7 +111,7 @@ const isPeopleNum = (req, res, next) => {
 
 const reservationExists = async (req, res, next) => {
   
-  const reservation = await service.read(req.params.reservationId)
+  const reservation = await service.read(req.params.reservation_id)
   if (reservation) {
     res.locals.reservation = reservation
     next()
@@ -136,6 +136,24 @@ const isReservationFinished = (req, res, next) => {
   }
 }
 
+const hasStatus = (req, res, next) => {
+  const { data = {} } = req.body
+  if (data.status === "booked" || data.status === "seated" || data.status === "finished" ) {
+    next()
+  } else {
+    next({status: 400, message: `status unknown`})
+  }
+}
+
+const isStatusFinished = (req, res, next) => {
+  const {reservation} = res.locals
+  if (reservation.status == "finished") {
+    next({status: 400, message: `A finished reservation cannot be updated`})
+  } else {
+    next()
+  }
+}
+
 // Route Handlers
 
 const list = async (req, res) => {
@@ -149,8 +167,17 @@ const create = async (req, res) => {
   res.status(201).json({ data })
 }
 
-const read = async(req, res) => {
+const read = async (req, res) => {
   const data = res.locals.reservation
+  res.status(200).json({data})
+}
+
+const update = async (req, res) => {
+  const updatedReservation = {
+    ...res.locals.reservation,
+    status: req.body.data.status
+  }
+  const data = await service.update(updatedReservation)
   res.status(200).json({data})
 }
 
@@ -169,6 +196,7 @@ module.exports = {
     isReservationFinished,
     asyncErrorBoundary(create)
   ],
+  update: [asyncErrorBoundary(reservationExists), isStatusFinished, hasStatus, asyncErrorBoundary(update)],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)]
 
 };

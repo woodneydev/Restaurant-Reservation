@@ -22,8 +22,18 @@ const read = (reservation_id) => {
         .first()
 }
 
+const update = (updatedReservation) => {
+    console.log("upppppp,", updatedReservation)
+    return knex("reservations")
+        .select("*")
+        .where({reservation_id: updatedReservation.reservation_id})
+        .update(updatedReservation, "*")
+        .then((updated) => updated[0])
+}
+
 module.exports = {
     list,
     create,
+    update,
     read,
 }
