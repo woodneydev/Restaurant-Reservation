@@ -24,6 +24,7 @@ const validProperties = [
   "reservation_date",
   "reservation_time",
   "people",
+  "status"
 ]
 
 const hasValidProperties = (req, res, next) => {
@@ -115,7 +116,23 @@ const reservationExists = async (req, res, next) => {
     res.locals.reservation = reservation
     next()
   } else {
-    next({status: 404, message: `Reservation cannot be found`})
+    next({status: 404, message: `Reservation cannot be found, 99`})
+  }
+}
+
+const isReservationSeated = (req, res, next) => {
+  if (req.body.data.status === "seated") {
+    next({status: 400, message: `reservation is seated`})
+  } else {
+    next()
+  }
+}
+
+const isReservationFinished = (req, res, next) => {
+  if (req.body.data.status === "finished") {
+    next({status: 400, message: `reservation is finished`})
+  } else {
+    next()
   }
 }
 
@@ -148,6 +165,8 @@ module.exports = {
     isDateCorrect,
     isTimeCorrect,
     isTimeClosed,
+    isReservationSeated,
+    isReservationFinished,
     asyncErrorBoundary(create)
   ],
   read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)]

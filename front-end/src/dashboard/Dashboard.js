@@ -39,6 +39,7 @@ function Dashboard() {
   let list;
   if (reservations.length > 0) {
     list = reservations.map(user => {
+      console.log(user)
       return  <UserCard user={user} key={user.reservation_id} /> 
     })
   }

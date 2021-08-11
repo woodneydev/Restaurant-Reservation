@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import { useHistory } from "react-router"
 import ErrorAlert from "../layout/ErrorAlert"
 import OneTable from "./OneTable"
 
@@ -28,7 +27,7 @@ function AllTables() {
             return <OneTable key={index} table={table}  />
         })
     }
-    
+
     return (
         <ul className="list-group list-group-numbered mb-5">
             <ErrorAlert error={failure} />
