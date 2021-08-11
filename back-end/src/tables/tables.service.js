@@ -13,7 +13,24 @@ const create = (table) => {
         .then(createdTables => createdTables[0])
 }
 
+const read = (table_id) => {
+    return knex("tables")
+        .select("*")
+        .where({table_id})
+        .first()
+}
+
+const update = (updatedTable) => {
+    return knex("tables")
+        .select("*")
+        .where({table_id: updatedTable.table_id})
+        .update(updatedTable, "*")
+        .then((updated) => updated[0])
+}
+
 module.exports = {
     list,
     create,
+    read,
+    update,
 }

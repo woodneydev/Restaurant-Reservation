@@ -43,6 +43,17 @@ const capacityIsNum = (req, res, next) => {
     }
 }
 
+const tableExists = async (req, res, next) => {
+    const table = await service.read(req.params.table_id)
+    console.log(table)
+    if (table) {
+        res.locals.table = table
+        next()
+    } else {
+        next({status: 404, message: `Table cannot be found`})
+    }
+}
+
 // Route Functions
 
 const create = async (req, res) => {
@@ -55,7 +66,18 @@ const list = async (req, res) => {
     res.status(200).json({data})
 }
 
+const update = async (req, res, next) => {
+    const updateTable = {
+        ...req.body.data,
+        table_id: res.locals.table.table_id
+    }
+
+    const data = await service.update(updateTable)
+    res.status(201).json({data})
+}
+
 module.exports = {
     create: [hasValidProperties, hasRequiredProperties, nameHasTwoChars, capacityIsNum, asyncErrorBoundary(create)],
+    update: [asyncErrorBoundary(tableExists), asyncErrorBoundary(update)],
     list,
 }

@@ -15,7 +15,15 @@ const create = (reservation) => {
         .then((createdReservation) => createdReservation[0] )
 }
 
+const read = (reservation_id) => {
+    return knex("reservations")
+        .select("*")
+        .where({reservation_id})
+        .first()
+}
+
 module.exports = {
     list,
     create,
+    read,
 }

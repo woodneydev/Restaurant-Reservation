@@ -108,6 +108,17 @@ const isPeopleNum = (req, res, next) => {
   }
 }
 
+const reservationExists = async (req, res, next) => {
+  
+  const reservation = await service.read(req.params.reservationId)
+  if (reservation) {
+    res.locals.reservation = reservation
+    next()
+  } else {
+    next({status: 404, message: `Reservation cannot be found`})
+  }
+}
+
 // Route Handlers
 
 const list = async (req, res) => {
@@ -119,6 +130,11 @@ const list = async (req, res) => {
 const create = async (req, res) => {
   const data = await service.create(req.body.data)
   res.status(201).json({ data })
+}
+
+const read = async(req, res) => {
+  const data = res.locals.reservation
+  res.status(200).json({data})
 }
 
 module.exports = {
@@ -134,7 +150,6 @@ module.exports = {
     isTimeClosed,
     asyncErrorBoundary(create)
   ],
-
-
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)]
 
 };
