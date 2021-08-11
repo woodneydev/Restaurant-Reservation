@@ -23,7 +23,7 @@ const validProperties = [
   "mobile_number",
   "reservation_date",
   "reservation_time",
-  "people"
+  "people",
 ]
 
 const hasValidProperties = (req, res, next) => {

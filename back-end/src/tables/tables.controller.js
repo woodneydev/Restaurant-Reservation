@@ -9,7 +9,8 @@ const reservationsService = require("../reservations/reservations.service")
 
 const validProperties = [
     "table_name",
-    "capacity"
+    "capacity",
+    "reservation_id"
 ]
 
 const hasValidProperties = (req, res, next) => {
