@@ -56,20 +56,17 @@ const tableExists = async (req, res, next) => {
 
 const isTableOccupied = (req, res, next) => {
     const {table} = res.locals
-    const x = {...table}
-    console.log("this is x", x)
     if (table.reservation_id) {
         next({status: 400, message: `Table already occupied`})
+    } else {
+        next()
     }
 }
 
-const isTableBigEnough = async (req, res, next) => {
-    const table = await service.read(req.params.table_id)
-    console.log(`this is table` ,table)
-    const reservation = await reservationsService.read(req.body.data.reservation_id)
-    console.log(`this is reservation`, reservation)
+const isTableBigEnough = (req, res, next) => {
+    const table = res.locals.table
+    const reservation = res.locals.reservation
     let isSufficient = reservation.people <= table.capacity
-    console.log(`is sufficient`, isSufficient)
     if (isSufficient) {
         next()
     } else {
@@ -92,6 +89,7 @@ const isThereReservationId = hasProperties("reservation_id")
 const doesReservationExists = async (req, res, next) => {
     const reservation = await reservationsService.read(req.body.data.reservation_id)
     if (reservation) {
+        res.locals.reservation = reservation
         next()
     } else {
         next({status: 404, message: `Reservation not found, invalid reservation_id, 999`})
@@ -128,7 +126,8 @@ module.exports = {
         isThereData, 
         isThereReservationId, 
         asyncErrorBoundary(doesReservationExists), 
-        asyncErrorBoundary(isTableBigEnough),
+        isTableBigEnough,
+        isTableOccupied,
         asyncErrorBoundary(update)
     ],
     list,
