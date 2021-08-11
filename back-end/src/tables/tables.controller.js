@@ -123,9 +123,20 @@ const update = async (req, res, next) => {
         ...req.body.data,
         table_id: res.locals.table.table_id
     }
+    
+    const updatedReservation = {
+        ...res.locals.reservation,
+        status: "seated"
+    }
 
-    const data = await service.update(updateTable)
-    res.status(200).json({data})
+    // const data = await service.update(updateTable)
+    const tableData = await service.update(updateTable)
+    const resData = await reservationsService.update(updatedReservation)
+    
+    // res.status(200).json({data})
+    res.status(200).json({data: {
+        ...tableData, ...resData
+    }})
 }
 
 const destroy = async (req, res, next) => {
