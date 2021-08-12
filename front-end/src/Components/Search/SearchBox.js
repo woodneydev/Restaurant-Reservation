@@ -1,12 +1,28 @@
+import { useState } from "react"
+
 function SearchBox() {
+
+    const initialFormState = {phone: ""}
+    const [formData, setFormData] = useState({...initialFormState})
+
+    const handleChange = ({target}) => {
+        setFormData({...formData, [target.name]: target.value })
+    }
+
+    
+
+    const handleSubmit = (event) => {
+        event.preventDefault()
+    }
+
     return (
-        <div className="card-body" >
+        <form className="card-body" >
             <div className="input-group">
-            <input type="search" className="form-control rounded" placeholder="Enter a customer's phone number" aria-label="Search"
-                aria-describedby="search-addon" />
-            <button type="button" className="btn btn-outline-primary">Find</button>
+            <input name="phone" type="search" className="form-control rounded" placeholder="Enter a customer's phone number" aria-label="Search"
+                aria-describedby="search-addon" onChange={handleChange} value={formData.phone} />
+            <button type="submit" className="btn btn-outline-primary">Find</button>
             </div>
-        </div>
+        </form>
     )
 }
 
