@@ -4,7 +4,8 @@ const knex = require("../db/connection")
 const list = (reservation_date) => {
     return knex("reservations")
         .select("*")
-        .where({reservation_date})
+        .whereNot('status', 'finished')
+        .andWhere({reservation_date})
         .orderBy("reservation_time")
 }
 
@@ -16,6 +17,7 @@ const create = (reservation) => {
 }
 
 const read = (reservation_id) => {
+    console.log("resid" , reservation_id)
     return knex("reservations")
         .select("*")
         .where({reservation_id})

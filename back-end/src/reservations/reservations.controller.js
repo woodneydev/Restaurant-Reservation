@@ -44,7 +44,7 @@ const isDayClosed = (req, res, next) => {
   const { data = {} } = req.body
   let result = new Date(data.reservation_date)
   let day = result.getDay()
-  //need to be set to one for tuesdays
+  //needs to be set to one for tuesdays, monday begins at 0
   if (day == 1) {
     next({ status: 400, message: `Restaurant is closed on Tuesdays` })
   } else {
