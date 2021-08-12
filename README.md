@@ -121,10 +121,6 @@ You can use the screenshots to debug your code by rendering additional informati
 
 ## Projec Functions
 
-As a restaurant manager<br/>
-I want to create a new reservation when a customer calls<br/>
-so that I know how many customers will arrive at the restaurant on a given day.
-
 #### Reservations
 
 1. The `/reservations/new` page will
