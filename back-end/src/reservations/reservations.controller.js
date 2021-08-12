@@ -83,7 +83,7 @@ const isDateCorrect = (req, res, next) => {
 
 const isTimeCorrect = (req, res, next) => {
   let time = req.body.data.reservation_time
-  let expression = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
+  let expression = /\d\d:\d\d/
   if (time.match(expression)) {
     return next()
   } else {

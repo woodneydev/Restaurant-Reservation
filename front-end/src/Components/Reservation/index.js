@@ -27,8 +27,14 @@ function Reservation () {
     const methodPost = "POST"
     const headings = "New Reservation"
 
-    const apiUrlPut = `${process.env.REACT_APP_API_BASE_URL}/reservations`
-    const methodPut = "PUT"
+    const initialFormState = {
+        first_name: "",
+        last_name: "",
+        mobile_number: "",
+        reservation_date: "",
+        reservation_time: "",
+        people: "",
+    }
 
     return (
         <Switch>
@@ -36,13 +42,13 @@ function Reservation () {
                 <Redirect to={"/dashboard"} />
             </Route>
             <Route path={`${url}/new`} >
-                <ReservationForm url={apiUrlPost} http={methodPost} headings={headings} formError={formError} setFormError={setFormError} />
+                <ReservationForm initialFormState={initialFormState} url={apiUrlPost} http={methodPost} headings={headings} formError={formError} setFormError={setFormError} />
             </Route>
             <Route path={`${url}/:reservation_id/seat`} >
                 <Seat tables={tables} failure={failure} formError={formError} setFormError={setFormError} />
             </Route>
             <Route path={`${url}/:reservation_id/edit`} >
-                <Edit url={apiUrlPut} http={methodPut} formError={formError} setFormError={setFormError} />
+                <Edit  formError={formError} setFormError={setFormError} />
             </Route>
         </Switch>
         

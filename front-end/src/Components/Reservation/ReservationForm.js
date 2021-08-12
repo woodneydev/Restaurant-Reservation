@@ -3,16 +3,7 @@ import {useHistory} from "react-router-dom"
 import ErrorAlert from "../../layout/ErrorAlert"
 
 
-function ReservationForm({ url, http, headings, formError, setFormError}) {
-
-    const initialFormState = {
-        first_name: "",
-        last_name: "",
-        mobile_number: "",
-        reservation_date: "",
-        reservation_time: "",
-        people: "",
-    }
+function ReservationForm({ initialFormState, url, http, headings, formError, setFormError}) {
     
     const [formData, setFormData] = useState({...initialFormState})
     const restaurant = {opening: "10:30", closing: "21:30"}
