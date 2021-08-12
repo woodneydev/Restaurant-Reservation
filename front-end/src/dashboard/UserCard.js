@@ -1,9 +1,37 @@
-import {Link} from "react-router-dom"
+import {Link, useHistory} from "react-router-dom"
 import {formatAsDate, formatAsTime} from "../utils/date-time"
 
 function UserCard({user}) {
 
-    let button = user.status === "booked" ? <Link to={`/reservations/${user.reservation_id}/seat`} className="btn btn-primary">Seat</Link> : false
+    const history = useHistory()
+
+    async function cancelReservation() {           
+        const url = `${process.env.REACT_APP_API_BASE_URL}/reservations/${user.reservation_id}/status`
+        const options = {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ "data": {
+                "status": "cancelled"
+            }}),
+          }
+        const response = await fetch(url, options)
+        const success = await response.json()
+        const {error} = success
+        if (!error) {
+            history.push("/dashboard")
+            history.go(0)
+        }
+
+        return 
+    }
+
+    const handleClick = () => {
+        const doesConfirm = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
+
+        if (!doesConfirm) return;
+    }
+
+    let button = user.status === "booked" ? <Link to={`/reservations/${user.reservation_id}/seat`} className="btn btn-warning">Seat</Link> : false
 
     return (
         <div className="card mt-3">
@@ -12,7 +40,9 @@ function UserCard({user}) {
             </h5>
             <div className="card-body">
                 <h5 className="card-title">{formatAsDate(user.reservation_date)} at {formatAsTime(user.reservation_time)}</h5>
-                <p className="card-text">Party Size: {user.people} people</p> <span> <p>{user.mobile_number}</p></span>
+                <p className="card-text">Party Size: {user.people} people</p> <span> <p>Phone: {user.mobile_number}</p></span>
+                <Link to={`/reservations/${user.reservation_id}/seat`} ><button className="btn btn-primary mr-2"> Edit </button></Link> 
+                <button data-reservation-id-cancel={user.reservation_id} className="btn btn-danger mr-2" onClick={handleClick} > Cancel </button>
                 {button}
             </div>
         </div>

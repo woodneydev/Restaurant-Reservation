@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { useHistory } from "react-router"
 import ErrorAlert from "../../layout/ErrorAlert"
 import {formatAsDate, formatAsTime} from "../../utils/date-time"
 import UserCard from "../../dashboard/UserCard"
@@ -11,8 +10,6 @@ function SearchBox() {
     const [formError, setFormError] = useState(null)
     const [reservations, setReservations] = useState([])
     const [failure, setFailure] = useState(null)
-
-    const history = useHistory()
 
     const handleChange = ({target}) => {
         setFormData({...formData, [target.name]: target.value })
@@ -51,8 +48,6 @@ function SearchBox() {
             )
         })
     }
-
-    const errorMessage = {message: `No reservations found`}
 
     return (
         <>
