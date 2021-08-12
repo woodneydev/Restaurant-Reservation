@@ -69,6 +69,10 @@ function Seat({tables, failure, formError, setFormError}) {
         submitForm()
     }
 
+    const handleCancel = () => {
+        history.goBack()
+    }
+
     let list;
     if (tables.length) {
         list = tables.map((table, index) => {
@@ -88,7 +92,7 @@ function Seat({tables, failure, formError, setFormError}) {
                     {list}
                 </select> <br />
                 <button type="submit" className="btn btn-primary mt-3"> Submit</button>
-                <button type="button" className="btn btn-danger ml-3 mt-3" >Cancel</button>
+                <button type="button" className="btn btn-danger ml-3 mt-3" onClick={handleCancel} >Cancel</button>
             </div>
             <ErrorAlert error={formError} />
         </form>

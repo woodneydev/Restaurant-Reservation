@@ -150,28 +150,6 @@ const update = async (req, res, next) => {
     })
 }
 
-// const destroy = async (req, res, next) => {
-
-//     const reservation = await reservationsService.read(req.body.data.reservation_id)
-
-//     const updatedTable = {
-//         ...res.locals.table,
-//         reservation_id: null
-//     }
-
-//     const updatedReservation = {
-//         ...reservation,
-//         status: "finished"
-//     }
-
-//     const resData = await reservationsService.update(updatedReservation)
-//     const tableData = await service.update(updatedTable)
-//     console.log( "table and res data",tableData, resData)
-//     res.status(200).json({data: {
-//         ...resData, ...tableData, 
-//     }})
-// }
-
 const destroy = async (req, res, next) => {
     const { table = {} } = res.locals
     const copy = {...table}

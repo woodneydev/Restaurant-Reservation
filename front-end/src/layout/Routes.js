@@ -5,6 +5,7 @@ import Dashboard from "../dashboard/Dashboard";
 import NotFound from "./NotFound";
 import Reservation from "../Components/Reservation";
 import Table from "../Components/Table"
+import Search from "../Components/Search";
 
 /**
  * Defines all the routes for the application.
@@ -20,15 +21,18 @@ function Routes() {
       <Route exact={true} path="/">
         <Redirect to={"/dashboard"} />
       </Route>
+      <Route path="/search" >
+        <Search />
+      </Route>
       <Route path="/reservations">
         <Reservation />
       </Route>
       <Route path="/dashboard">
         <Dashboard />
       </Route>
-        <Route path="/tables" >
+      <Route path="/tables" >
           <Table />
-        </Route>
+      </Route>
       <Route>
         <NotFound />
       </Route>

@@ -8,7 +8,16 @@ const asyncErrorBoundary = require("../errors/asyncErrorBoundary")
 
 //Validation Middleware
 
-const hasQuery = async (req, res, next) => {
+const hasPhoneQuery = async (req, res, next) => {
+  const mobile_number = req.query.mobile_number
+
+  if (mobile_number) {
+    const data = await service.search(mobile_number)
+    res.status(200).json({data})
+  }
+}
+
+const hasDateQuery = async (req, res, next) => {
   const date = req.query.date
   if (!date) {
     next({ status: 400, message: `Must specify date` })
@@ -182,7 +191,7 @@ const update = async (req, res) => {
 }
 
 module.exports = {
-  list: [hasQuery, asyncErrorBoundary(list)],
+  list: [ asyncErrorBoundary(hasPhoneQuery), hasDateQuery, asyncErrorBoundary(list)],
   create: [
     hasValidProperties,
     hasRequiredProperties,
