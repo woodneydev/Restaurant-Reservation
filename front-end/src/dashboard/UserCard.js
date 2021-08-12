@@ -32,7 +32,10 @@ function UserCard({user}) {
         cancelReservation()
     }
 
-    let button = user.status === "booked" ? <Link to={`/reservations/${user.reservation_id}/seat`} className="btn btn-warning">Seat</Link> : false
+    let button = user.status === "booked" ? 
+    <Link to={`/reservations/${user.reservation_id}/seat`} > 
+        <button href={`/reservations/${user.reservation_id}/seat`} className="btn btn-warning" >Seat</button>
+    </Link> : false
 
     return (
         <div className="card mt-3">
@@ -42,7 +45,9 @@ function UserCard({user}) {
             <div className="card-body">
                 <h5 className="card-title">{formatAsDate(user.reservation_date)} at {formatAsTime(user.reservation_time)}</h5>
                 <p className="card-text">Party Size: {user.people} people</p> <span> <p>Phone: {user.mobile_number}</p></span>
-                <Link to={`/reservations/${user.reservation_id}/seat`} ><button className="btn btn-primary mr-2"> Edit </button></Link> 
+                <Link to={`/reservations/${user.reservation_id}/edit`} >
+                    <button href={`/reservations/${user.reservation_id}/edit`} className="btn btn-primary mr-2"> Edit </button>
+                </Link> 
                 <button data-reservation-id-cancel={user.reservation_id} className="btn btn-danger mr-2" onClick={handleClick} > Cancel </button>
                 {button}
             </div>

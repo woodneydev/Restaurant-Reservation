@@ -3,7 +3,7 @@ import {useHistory} from "react-router-dom"
 import ErrorAlert from "../../layout/ErrorAlert"
 
 
-function ReservationForm({formError, setFormError}) {
+function ReservationForm({ url, http, headings, formError, setFormError}) {
 
     const initialFormState = {
         first_name: "",
@@ -26,9 +26,8 @@ function ReservationForm({formError, setFormError}) {
     //Helper Function
 
     async function submitForm() {           
-        const url = `${process.env.REACT_APP_API_BASE_URL}/reservations`
         const options = {
-            method: "POST",
+            method: http,
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({ "data": {
                 "first_name": formData.first_name,
@@ -79,7 +78,7 @@ function ReservationForm({formError, setFormError}) {
 
     return (
             <form className="card-body" onSubmit={handleSubmit} >
-                <h2>New Reservation</h2>
+                <h2>{headings}</h2>
                 <div className="mb-3">
                     <label htmlFor="first_name" className="form-label">First Name:</label>
                     <input id="first_name" name="first_name" type="text" className="form-control" onChange={handleChange} value={formData.first_name} required />

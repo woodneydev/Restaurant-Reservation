@@ -188,7 +188,6 @@ const update = async (req, res) => {
 }
 
 const updateRes = async (req, res) => {
-  console.log("in the pipeline")
   const updatedReservation = {
     ...req.body.data,
     reservation_id: res.locals.reservation.reservation_id
