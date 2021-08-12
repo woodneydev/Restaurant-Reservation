@@ -130,7 +130,7 @@ const isReservationFinished = (req, res, next) => {
 
 const hasStatus = (req, res, next) => {
   const { data = {} } = req.body
-  if (data.status === "booked" || data.status === "seated" || data.status === "finished" ) {
+  if (data.status === "booked" || data.status === "seated" || data.status === "finished" || data.status === "cancelled" ) {
     next()
   } else {
     next({status: 400, message: `status unknown`})
@@ -187,6 +187,16 @@ const update = async (req, res) => {
   res.status(200).json({data})
 }
 
+const updateRes = async (req, res) => {
+  console.log("in the pipeline")
+  const updatedReservation = {
+    ...req.body.data,
+    reservation_id: res.locals.reservation.reservation_id
+  }
+  const data = await service.update(updatedReservation)
+  res.status(200).json({data})
+}
+
 module.exports = {
   list: [ asyncErrorBoundary(listQuery) ],
   create: [
@@ -203,6 +213,7 @@ module.exports = {
     asyncErrorBoundary(create)
   ],
   update: [asyncErrorBoundary(reservationExists), isStatusFinished, hasStatus, asyncErrorBoundary(update)],
-  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)]
+  read: [asyncErrorBoundary(reservationExists), asyncErrorBoundary(read)],
+  updateRes: [asyncErrorBoundary(reservationExists), hasRequiredProperties, isPeopleNum, isDateCorrect, isTimeCorrect, asyncErrorBoundary(updateRes)]
 
 };

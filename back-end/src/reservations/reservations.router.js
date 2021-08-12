@@ -12,6 +12,7 @@ router.route("/:reservation_id/status")
 
 router.route("/:reservation_id")
     .get(controller.read)
+    .put(controller.updateRes)
 
 router.route("/")
     .get(controller.list)

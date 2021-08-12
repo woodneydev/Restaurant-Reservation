@@ -29,6 +29,7 @@ function UserCard({user}) {
         const doesConfirm = window.confirm("Do you want to cancel this reservation? This cannot be undone.");
 
         if (!doesConfirm) return;
+        cancelReservation()
     }
 
     let button = user.status === "booked" ? <Link to={`/reservations/${user.reservation_id}/seat`} className="btn btn-warning">Seat</Link> : false
