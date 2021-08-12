@@ -5,15 +5,15 @@ import UserCard from "../../dashboard/UserCard"
 
 function SearchBox() {
 
-    const initialFormState = {mobile_number: ""}
-    const [formData, setFormData] = useState({...initialFormState})
-    const [formError, setFormError] = useState(null)
-    const [reservations, setReservations] = useState([])
-    const [failure, setFailure] = useState(null)
+    const initialFormState = {mobile_number: ""};
+    const [formData, setFormData] = useState({...initialFormState});
+    const [formError, setFormError] = useState(null);
+    const [reservations, setReservations] = useState([]);
+    const [failure, setFailure] = useState(null);
 
     const handleChange = ({target}) => {
-        setFormData({...formData, [target.name]: target.value })
-    }
+        setFormData({...formData, [target.name]: target.value });
+    };
 
     async function submitForm() {           
         const url = `${process.env.REACT_APP_API_BASE_URL}/reservations?mobile_number=${formData.mobile_number}`
@@ -21,33 +21,32 @@ function SearchBox() {
             method: "GET",
             headers: {"Content-Type": "application/json"},
           }
-        const response = await fetch(url, options)
-        const success = await response.json()
-        setReservations(success.data)
+        const response = await fetch(url, options);
+        const success = await response.json();
+        setReservations(success.data);
         if (Array.isArray(success.data)) {
-            if (success.data.length === 0) setFailure({message: `No reservations found`})
+            if (success.data.length === 0) setFailure({message: `No reservations found`});
         }
-        const {error} = success
+        const {error} = success;
         if (error) {
-            setFormError({message: success.error})
+            setFormError({message: success.error});
         }
         return 
-    }
+    };
 
     const handleSubmit = (event) => {
-        event.preventDefault()
-        submitForm()
-    }
+        event.preventDefault();
+        submitForm();
+    };
 
-    console.log(reservations)
     let list;
     if (reservations.length) {
         list = reservations.map((reservation, index) => {
             return (
                 <UserCard key={index} user={reservation} formatAsTime={formatAsTime} formatAsDate={formatAsDate} />
             )
-        })
-    }
+        });
+    };
 
     return (
         <>

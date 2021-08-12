@@ -4,7 +4,7 @@ import ErrorAlert from "../layout/ErrorAlert";
 import UserCard from "./UserCard"
 import { today } from "../utils/date-time"
 import Loading from "./Loading"
-import {useLocation} from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import ReservationNav from "./ReservationNav";
 import AllTables from "./AllTables";
 
@@ -15,7 +15,7 @@ import AllTables from "./AllTables";
  * @returns {JSX.Element}
  */
 function Dashboard() {
-  const {search} = useLocation()
+  const { search } = useLocation()
   const searchParams = new URLSearchParams(search)
   const todayDate = searchParams.get("date")
 
@@ -24,9 +24,9 @@ function Dashboard() {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
   const [date, setDate] = useState(initialDay)
-  
+
   useEffect(loadDashboard, [date]);
-  
+
   function loadDashboard() {
     const abortController = new AbortController();
     setReservationsError(null);
@@ -34,15 +34,14 @@ function Dashboard() {
       .then(setReservations)
       .catch(setReservationsError);
     return () => abortController.abort();
-  }
+  };
 
   let list;
   if (reservations.length > 0) {
     list = reservations.map(user => {
-      console.log(user)
-      return  <UserCard user={user} key={user.reservation_id} /> 
+      return <UserCard user={user} key={user.reservation_id} />
     })
-  }
+  };
 
   return (
     <main>
@@ -56,7 +55,7 @@ function Dashboard() {
       <Loading reservations={reservations} />
       <ErrorAlert error={reservationsError} />
       {list}
-      
+
     </main>
   );
 }

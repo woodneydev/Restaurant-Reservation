@@ -3,85 +3,67 @@ import { useHistory, useParams } from "react-router-dom";
 import ErrorAlert from "../../layout/ErrorAlert";
 
 
-function Seat({tables, failure, formError, setFormError}) {
+function Seat({ tables, failure, formError, setFormError }) {
 
-    const {reservation_id} = useParams()
-    
+    const { reservation_id } = useParams();
+
     const initialFormState = {
         "table_id": "",
         "reservation_id": Number(reservation_id)
-    }
+    };
 
-    const [formData, setFormData] = useState({...initialFormState})
-    // const [formError, setFormError] = useState(null)
+    const [formData, setFormData] = useState({ ...initialFormState });
 
-    const history = useHistory()
+    const history = useHistory();
 
     const handleChange = ({ target }) => {
         setFormData({
-          ...formData,
-          [target.name]: target.value,
-        })
-    }
-
-    // async function submitForm() {    
-    //     const url = `${process.env.REACT_APP_API_BASE_URL}/tables/${formData.table_id}/seat`
-    //     const options = {
-    //         method: "PUT",
-    //         headers: {"Content-Type": "application/json"},
-    //         body: JSON.stringify({ data: {reservation_id: formData.reservation_id } } )
-    //       }
-    //     const response = await fetch(url, options)
-    //     const success = await response.json()
-    //     const {error} = success
-    //     if (error) {
-    //         console.log(error)
-    //         setFormError({message: success.error})
-    //     }
-    //     if (!error) history.push(`/dashboard`)
-
-    //     return success
-    // }
+            ...formData,
+            [target.name]: target.value,
+        });
+    };
 
     async function submitForm() {
-        const tableId = Number(formData.table_id)           
+        const tableId = Number(formData.table_id)
         const url = `${process.env.REACT_APP_API_BASE_URL}/tables/${tableId}/seat`
         const options = {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ "data": {
-                "reservation_id": Number(formData.reservation_id)
-            }}),
-          }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "data": {
+                    "reservation_id": Number(formData.reservation_id)
+                }
+            }),
+        }
         const response = await fetch(url, options)
-        const success = await response.json()
-        const {error} = success
+        const success = await response.json();
+        const { error } = success;
         if (error) {
-            setFormError({message: success.error})
+            setFormError({ message: success.error });
         }
         if (!error) history.push(`/dashboard`)
 
-        return true
-    }
+        return true;
+    };
 
     const handleSubmit = (event) => {
-        event.preventDefault()
-        submitForm()
-    }
+        event.preventDefault();
+        submitForm();
+    };
 
     const handleCancel = () => {
-        history.goBack()
-    }
+        history.goBack();
+    };
 
     let list;
     if (tables.length) {
         list = tables.map((table, index) => {
             return (
-               <option key={index} value={table.table_id} >{table.table_name} - {table.capacity}</option>
+                <option key={index} value={table.table_id} >{table.table_name} - {table.capacity}</option>
             )
         })
-    }
-    
+    };
+
     return (
         <form className="card mt-5" onSubmit={handleSubmit} >
             <div className="card-body">

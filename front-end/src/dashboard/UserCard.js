@@ -1,28 +1,30 @@
-import {Link, useHistory} from "react-router-dom"
-import {formatAsDate, formatAsTime} from "../utils/date-time"
+import { Link, useHistory } from "react-router-dom"
+import { formatAsDate, formatAsTime } from "../utils/date-time"
 
-function UserCard({user}) {
+function UserCard({ user }) {
 
     const history = useHistory()
 
-    async function cancelReservation() {           
+    async function cancelReservation() {
         const url = `${process.env.REACT_APP_API_BASE_URL}/reservations/${user.reservation_id}/status`
         const options = {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ "data": {
-                "status": "cancelled"
-            }}),
-          }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "data": {
+                    "status": "cancelled"
+                }
+            }),
+        }
         const response = await fetch(url, options)
         const success = await response.json()
-        const {error} = success
+        const { error } = success
         if (!error) {
             history.push("/dashboard")
             history.go(0)
         }
 
-        return 
+        return
     }
 
     const handleClick = () => {
@@ -32,10 +34,10 @@ function UserCard({user}) {
         cancelReservation()
     }
 
-    let button = user.status === "booked" ? 
-    <Link to={`/reservations/${user.reservation_id}/seat`} > 
-        <button href={`/reservations/${user.reservation_id}/seat`} className="btn btn-warning" >Seat</button>
-    </Link> : false
+    let button = user.status === "booked" ?
+        <Link to={`/reservations/${user.reservation_id}/seat`} >
+            <button href={`/reservations/${user.reservation_id}/seat`} className="btn btn-warning" >Seat</button>
+        </Link> : false
 
     return (
         <div className="card mt-3">
@@ -47,8 +49,8 @@ function UserCard({user}) {
                 <p className="card-text">Party Size: {user.people} people</p> <span> <p>Phone: {user.mobile_number}</p></span>
                 <Link to={`/reservations/${user.reservation_id}/edit`} >
                     <button href={`/reservations/${user.reservation_id}/edit`} className="btn btn-primary mr-2"> Edit </button>
-                </Link> 
-                <button data-reservation-id-cancel={user.reservation_id} className="btn btn-danger mr-2" onClick={handleClick} > Cancel </button>
+                </Link>
+                {user.status !== "cancelled" ? <button data-reservation-id-cancel={user.reservation_id} className="btn btn-danger mr-2" onClick={handleClick} > Cancel </button> : false}
                 {button}
             </div>
         </div>

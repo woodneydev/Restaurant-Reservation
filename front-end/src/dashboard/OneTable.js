@@ -2,39 +2,39 @@ import { useState } from "react"
 import { useHistory } from "react-router"
 import ErrorAlert from "../layout/ErrorAlert"
 
-function OneTable({table}) {
+function OneTable({ table }) {
 
     const [formError, setFormError] = useState(null)
-    const history = useHistory()
+    const history = useHistory();
 
-    async function submitForm() {           
+    async function submitForm() {
         const url = `${process.env.REACT_APP_API_BASE_URL}/tables/${table.table_id}/seat`
         const options = {
             method: "Delete",
-            headers: {"Content-Type": "application/json"},
-          }
-        const response = await fetch(url, options)
-        const success = await response.json()
-        const {error} = success
+            headers: { "Content-Type": "application/json" },
+        }
+        const response = await fetch(url, options);
+        const success = await response.json();
+        const { error } = success;
         if (error) {
-            setFormError({message: success.error})
+            setFormError({ message: success.error });
         }
         if (!error) {
-            history.push("/dashboard")
-            history.go(0)
+            history.push("/dashboard");
+            history.go(0);
         }
 
-        return 
-    }
+        return;
+    };
 
     const handleFinish = (id) => {
         const doesConfirm = window.confirm("Is this table ready to seat new guests? This cannot be undone.");
 
         if (!doesConfirm) return;
 
-        submitForm()
+        submitForm();
 
-    }
+    };
 
     return (
         <li className="list-group-item d-flex justify-content-between align-items-start">

@@ -15,7 +15,7 @@ function Layout() {
   return (
     <div className="container">
       <div className="row h-100">
-        <div className="col-md-2 side-bar">
+        <div className="col-md-2 side-bar mb-3">
           <Menu />
         </div>
         <div className="col">

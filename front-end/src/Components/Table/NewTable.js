@@ -2,49 +2,51 @@ import { useState } from "react"
 import { useHistory } from "react-router-dom"
 import ErrorAlert from "../../layout/ErrorAlert"
 
-function NewTable({formError, setFormError}) {
+function NewTable({ formError, setFormError }) {
     const initialFormState = {
         table_name: "",
         capacity: ""
     }
 
-    const [formData, setFormData] = useState({ ...initialFormState })
-    const history = useHistory()
+    const [formData, setFormData] = useState({ ...initialFormState });
+    const history = useHistory();
 
-    const handleChange = ({target}) => {
-        setFormData({...formData, [target.name]: target.value })
-    }
+    const handleChange = ({ target }) => {
+        setFormData({ ...formData, [target.name]: target.value });
+    };
 
     const handleCancel = () => {
-        setFormData({...initialFormState})
-        history.goBack()
-    }
+        setFormData({ ...initialFormState });
+        history.goBack();
+    };
 
-    async function submitForm() {           
+    async function submitForm() {
         const url = `${process.env.REACT_APP_API_BASE_URL}/tables`
         const options = {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({ "data": {
-                "table_name": formData.table_name,
-                "capacity": Number(formData.capacity)
-            }}),
-          }
-        const response = await fetch(url, options)
-        const success = await response.json()
-        const {error} = success
-        if (error) {
-            setFormError({message: success.error})
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                "data": {
+                    "table_name": formData.table_name,
+                    "capacity": Number(formData.capacity)
+                }
+            }),
         }
-        if (!error) history.push(`/dashboard`)
+        const response = await fetch(url, options);
+        const success = await response.json();
+        const { error } = success;
+        if (error) {
+            setFormError({ message: success.error });
+        };
+        if (!error) history.push(`/dashboard`);
 
-        return success
-    }
+        return success;
+    };
 
     const handleSubmit = (event) => {
-        event.preventDefault()
-        submitForm()
-    }
+        event.preventDefault();
+        submitForm();
+    };
 
     return (
         <>

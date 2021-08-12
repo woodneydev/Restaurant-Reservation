@@ -4,16 +4,16 @@ function ReservationNav({ setDate, date, currentDay }) {
 
     const handleClickPrevious = () => {
         const previousDay = previous(date)
-        setDate(previousDay)
+        setDate(previousDay);
     }
 
     const handleClickToday = () => {
-        setDate(currentDay)
+        setDate(currentDay);
     }
 
     const handleClickNext = () => {
         const nextDay = next(date)
-        setDate(nextDay)
+        setDate(nextDay);
     }
 
     return (
