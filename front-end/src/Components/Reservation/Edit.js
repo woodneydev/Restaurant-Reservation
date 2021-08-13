@@ -15,9 +15,10 @@ function Edit() {
     const methodPut = "PUT";
 
     useEffect(() => {
+        const abortController = new AbortController();
         async function loadForm() {
             try {
-                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/reservations/${reservation_id}`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/reservations/${reservation_id}`, { signal: abortController.signal });
                 const form = await response.json();
                 setFormData(form.data);
             } catch (e) {
@@ -25,6 +26,10 @@ function Edit() {
             }
         }
         loadForm();
+
+        return () => {
+            abortController.abort();
+        };
     }, [reservation_id]);
 
     let initialFormState;

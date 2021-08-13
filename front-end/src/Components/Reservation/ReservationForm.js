@@ -14,7 +14,9 @@ function ReservationForm({ initialFormState, url, http, headings, formError, set
         setFormData({ ...formData, [target.name]: target.value });
     };
 
-    async function submitForm() {
+    async function submitForm(abortController = new AbortController()) {
+        const { signal, abort } = abortController || {};
+
         const options = {
             method: http,
             headers: { "Content-Type": "application/json" },
@@ -28,6 +30,7 @@ function ReservationForm({ initialFormState, url, http, headings, formError, set
                     "people": Number(formData.people)
                 }
             }),
+            signal: signal
         };
         const response = await fetch(url, options);
         const success = await response.json();
@@ -37,7 +40,7 @@ function ReservationForm({ initialFormState, url, http, headings, formError, set
         }
         if (!error) history.push(`/dashboard?date=${formData.reservation_date}`);
 
-        return success;
+        return abort?.bind(abortController)
     };
 
     const validateDateTime = () => {

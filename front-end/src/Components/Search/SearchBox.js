@@ -15,11 +15,14 @@ function SearchBox() {
         setFormData({...formData, [target.name]: target.value });
     };
 
-    async function submitForm() {           
+    async function submitForm(abortController = new AbortController()) {    
+        const { signal, abort } = abortController || {};
+
         const url = `${process.env.REACT_APP_API_BASE_URL}/reservations?mobile_number=${formData.mobile_number}`
         const options = {
             method: "GET",
             headers: {"Content-Type": "application/json"},
+            signal: signal
           }
         const response = await fetch(url, options);
         const success = await response.json();
@@ -31,7 +34,7 @@ function SearchBox() {
         if (error) {
             setFormError({message: success.error});
         }
-        return 
+        return abort?.bind(abortController)
     };
 
     const handleSubmit = (event) => {

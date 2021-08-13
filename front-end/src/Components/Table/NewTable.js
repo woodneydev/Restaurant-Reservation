@@ -20,7 +20,9 @@ function NewTable({ formError, setFormError }) {
         history.goBack();
     };
 
-    async function submitForm() {
+    async function submitForm(abortController = new AbortController()) {
+        const { signal, abort } = abortController || {};
+
         const url = `${process.env.REACT_APP_API_BASE_URL}/tables`
         const options = {
             method: "POST",
@@ -31,6 +33,7 @@ function NewTable({ formError, setFormError }) {
                     "capacity": Number(formData.capacity)
                 }
             }),
+            signal: signal
         }
         const response = await fetch(url, options);
         const success = await response.json();
@@ -40,7 +43,7 @@ function NewTable({ formError, setFormError }) {
         };
         if (!error) history.push(`/dashboard`);
 
-        return success;
+        return abort?.bind(abortController)
     };
 
     const handleSubmit = (event) => {

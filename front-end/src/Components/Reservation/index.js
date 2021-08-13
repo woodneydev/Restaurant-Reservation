@@ -11,9 +11,10 @@ function Reservation() {
     const { url } = useRouteMatch();
 
     useEffect(() => {
+        const abortController = new AbortController();
         async function loadTables() {
             try {
-                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/tables`);
+                const response = await fetch(`${process.env.REACT_APP_API_BASE_URL}/tables`, { signal: abortController.signal });
                 const tableList = await response.json();
                 setTables(tableList.data);
             } catch (e) {
@@ -21,6 +22,9 @@ function Reservation() {
             }
         }
         loadTables();
+        return () => {
+            abortController.abort();
+        };
     }, [])
 
     const apiUrlPost = `${process.env.REACT_APP_API_BASE_URL}/reservations`;
